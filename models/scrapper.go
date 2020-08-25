@@ -18,7 +18,7 @@ func (t *Target) ScrapperStart() {
 
 	urls := t.urlList()
 
-	stocks := []Stock{}
+	// stocks := []Stock{}
 
 	var wg sync.WaitGroup
 	var lock sync.Mutex
@@ -28,13 +28,14 @@ func (t *Target) ScrapperStart() {
 			time.Sleep(3 * time.Second)
 		}
 		wg.Add(1)
-		go t.urlVisit(url, &stocks, &wg, &lock)
+		// go t.urlVisit(url, &stocks, &wg, &lock)
+		go t.urlVisit(url, &wg, &lock)
 	}
 	wg.Wait()
 
-	fmt.Println("--------------------------------------")
+	// fmt.Println("--------------------------------------")
 	// fmt.Println(stocks)
-	fmt.Println("ADET: ", len(stocks))
+	// fmt.Println("ADET: ", len(stocks))
 }
 
 func (t *Target) urlList() []string {
@@ -52,7 +53,8 @@ func (t *Target) urlList() []string {
 	return urlList
 }
 
-func (t *Target) urlVisit(url string, stocks *[]Stock, wg *sync.WaitGroup, lock *sync.Mutex) {
+func (t *Target) urlVisit(url string, wg *sync.WaitGroup, lock *sync.Mutex) {
+	// func (t *Target) urlVisit(url string, stocks *[]Stock, wg *sync.WaitGroup, lock *sync.Mutex) {
 	defer wg.Done()
 	c := colly.NewCollector()
 
@@ -72,7 +74,8 @@ func (t *Target) urlVisit(url string, stocks *[]Stock, wg *sync.WaitGroup, lock 
 	c.Visit(url)
 
 	lock.Lock()
-	*stocks = append(*stocks, stock)
+	// *stocks = append(*stocks, stock)
+	stock.Insert()
 	lock.Unlock()
 
 	fmt.Println(stock)
