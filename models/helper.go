@@ -1,4 +1,4 @@
-package utils
+package models
 
 import (
 	"log"
@@ -7,12 +7,12 @@ import (
 	"time"
 )
 
-func ToFloat(s string) float64 {
+func toFloat(s string) float64 {
 	f, _ := strconv.ParseFloat(s, 8)
 	return f
 }
 
-func Chronometer(startTime time.Time) {
+func chronometer(startTime time.Time) {
 	endTime := time.Since(startTime)
 	log.Println("startTime: ", startTime, "endTime: ", endTime, "=========> ", shortDuration(endTime))
 }
