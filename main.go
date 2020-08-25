@@ -2,13 +2,11 @@ package main
 
 import (
 	"fmt"
-	"log"
-	"strconv"
-	"strings"
 	"sync"
 	"time"
 
 	"github.com/gocolly/colly/v2"
+	"github.com/omer-akbas/stock-data/utils"
 	"github.com/robfig/cron/v3"
 )
 
@@ -23,7 +21,7 @@ func main() {
 
 func scrapperStart() {
 
-	defer chronometer(time.Now())
+	defer utils.Chronometer(time.Now())
 
 	urls := urlList()
 
@@ -65,10 +63,10 @@ func urlVisit(url string, stocks *[]Stock, wg *sync.WaitGroup, lock *sync.Mutex)
 		stock = Stock{
 			Name:          e.ChildText("section > div.row > div.col-12.col-md-8.col-content > div:nth-child(3) > div > div:nth-child(1) > div.data-detay-page-heading > div:nth-child(1) > div.col-9.flex.align-items-center > h1"),
 			Code:          e.ChildText("section > div.row > div.col-12.col-md-8.col-content > div:nth-child(3) > div > div:nth-child(1) > div.data-detay-page-heading > div:nth-child(1) > div.col-9.flex.align-items-center > span"),
-			LastPrice:     toFloat(e.ChildText("section > div.row > div.col-12.col-md-8.col-content > div:nth-child(3) > div > div:nth-child(1) > div.p-3 > div.flex-list-2-col.flex.justify-content-between > ul:nth-child(1) > li:nth-child(1) > span:nth-child(2)")),
-			PreviousPrice: toFloat(e.ChildText("section > div.row > div.col-12.col-md-8.col-content > div:nth-child(3) > div > div:nth-child(1) > div.p-3 > div.flex-list-2-col.flex.justify-content-between > ul:nth-child(2) > li:nth-child(1) > span:nth-child(2)")),
-			Bid:           toFloat(e.ChildText("section > div.row > div.col-12.col-md-8.col-content > div:nth-child(3) > div > div:nth-child(1) > div.p-3 > div.flex-list-2-col.flex.justify-content-between > ul:nth-child(1) > li:nth-child(2) > span:nth-child(2)")),
-			Ask:           toFloat(e.ChildText("section > div.row > div.col-12.col-md-8.col-content > div:nth-child(3) > div > div:nth-child(1) > div.p-3 > div.flex-list-2-col.flex.justify-content-between > ul:nth-child(1) > li:nth-child(3) > span:nth-child(2)")),
+			LastPrice:     utils.ToFloat(e.ChildText("section > div.row > div.col-12.col-md-8.col-content > div:nth-child(3) > div > div:nth-child(1) > div.p-3 > div.flex-list-2-col.flex.justify-content-between > ul:nth-child(1) > li:nth-child(1) > span:nth-child(2)")),
+			PreviousPrice: utils.ToFloat(e.ChildText("section > div.row > div.col-12.col-md-8.col-content > div:nth-child(3) > div > div:nth-child(1) > div.p-3 > div.flex-list-2-col.flex.justify-content-between > ul:nth-child(2) > li:nth-child(1) > span:nth-child(2)")),
+			Bid:           utils.ToFloat(e.ChildText("section > div.row > div.col-12.col-md-8.col-content > div:nth-child(3) > div > div:nth-child(1) > div.p-3 > div.flex-list-2-col.flex.justify-content-between > ul:nth-child(1) > li:nth-child(2) > span:nth-child(2)")),
+			Ask:           utils.ToFloat(e.ChildText("section > div.row > div.col-12.col-md-8.col-content > div:nth-child(3) > div > div:nth-child(1) > div.p-3 > div.flex-list-2-col.flex.justify-content-between > ul:nth-child(1) > li:nth-child(3) > span:nth-child(2)")),
 		}
 	})
 
@@ -79,11 +77,6 @@ func urlVisit(url string, stocks *[]Stock, wg *sync.WaitGroup, lock *sync.Mutex)
 	lock.Unlock()
 
 	fmt.Println(stock)
-}
-
-func toFloat(s string) float64 {
-	f, _ := strconv.ParseFloat(s, 8)
-	return f
 }
 
 func urlList() []string {
@@ -98,20 +91,4 @@ func urlList() []string {
 	c.Visit("https://finans.mynet.com/borsa/hisseler")
 
 	return urlList
-}
-
-func chronometer(startTime time.Time) {
-	endTime := time.Since(startTime)
-	log.Println("startTime: ", startTime, "endTime: ", endTime, "=========> ", shortDuration(endTime))
-}
-
-func shortDuration(d time.Duration) string {
-	s := d.String()
-	if strings.HasSuffix(s, "m0s") {
-		s = s[:len(s)-2]
-	}
-	if strings.HasSuffix(s, "h0m") {
-		s = s[:len(s)-2]
-	}
-	return s
 }
