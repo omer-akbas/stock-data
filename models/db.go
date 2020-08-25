@@ -18,11 +18,11 @@ func dbConnect() *sql.DB {
 		password string
 	)
 
-	flag.StringVar(&host, "host", "192.168.6.41", "host (ip or name)")
+	flag.StringVar(&host, "host", "93.187.203.193", "host (ip or name)")
 	flag.StringVar(&port, "port", "3306", "port")
-	flag.StringVar(&database, "database", "digidb", "database name")
-	flag.StringVar(&user, "user", "omer", "username")
-	flag.StringVar(&password, "password", "YrGK!MNt65qp", "password")
+	flag.StringVar(&database, "database", "mynet", "database name")
+	flag.StringVar(&user, "user", "mynet", "username")
+	flag.StringVar(&password, "password", "#871mtkV", "password")
 
 	flag.Parse()
 	connQuery := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", user, password, host, port, database)
