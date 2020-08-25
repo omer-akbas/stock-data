@@ -1,0 +1,12 @@
+.idea
+.vscode
+.DS_Store
+*.swp
+*.swo
+
+vendor
+server.log
+stock-data
+stock-data.exe
+debug
+tmp/*
