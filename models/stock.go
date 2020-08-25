@@ -1,5 +1,7 @@
 package models
 
+import "strings"
+
 //Son işlem fiyatı = last price
 //Alış fiyatı = bid
 //Satış fiyatı = ask
@@ -20,7 +22,7 @@ func (s *Stock) Insert() error {
 
 	_ = db.QueryRow("SELECT COUNT(*) FROM stock WHERE code = ?", s.Code).Scan(&count)
 	if count == 0 { //first data
-		lastInsert, err := db.Exec("INSERT INTO stock(name, code) values(?, ?)", s.Name, s.Code)
+		lastInsert, err := db.Exec("INSERT INTO stock(name, code) values(?, ?)", s.Name, strings.ToUpper(s.Code))
 		if err != nil {
 			return err
 		}
