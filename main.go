@@ -13,6 +13,7 @@ import (
 )
 
 func main() {
+	scrapperStart()
 	c := cron.New()
 	c.AddFunc("@every 1h0m0s", scrapperStart)
 	c.Start()
@@ -21,6 +22,7 @@ func main() {
 }
 
 func scrapperStart() {
+
 	defer chronometer(time.Now())
 
 	urls := urlList()
