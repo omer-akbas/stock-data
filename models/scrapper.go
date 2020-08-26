@@ -2,6 +2,7 @@ package models
 
 import (
 	"fmt"
+	"strings"
 	"sync"
 	"time"
 
@@ -63,7 +64,7 @@ func (t *Target) urlVisit(url string, wg *sync.WaitGroup, lock *sync.Mutex) {
 	c.OnHTML("body", func(e *colly.HTMLElement) {
 		stock = Stock{
 			Name:          e.ChildText("section > div.row > div.col-12.col-md-8.col-content > div:nth-child(3) > div > div:nth-child(1) > div.data-detay-page-heading > div:nth-child(1) > div.col-9.flex.align-items-center > h1"),
-			Code:          e.ChildText("section > div.row > div.col-12.col-md-8.col-content > div:nth-child(3) > div > div:nth-child(1) > div.data-detay-page-heading > div:nth-child(1) > div.col-9.flex.align-items-center > span"),
+			Code:          strings.ToUpper(e.ChildText("section > div.row > div.col-12.col-md-8.col-content > div:nth-child(3) > div > div:nth-child(1) > div.data-detay-page-heading > div:nth-child(1) > div.col-9.flex.align-items-center > span")),
 			LastPrice:     toFloat(e.ChildText("section > div.row > div.col-12.col-md-8.col-content > div:nth-child(3) > div > div:nth-child(1) > div.p-3 > div.flex-list-2-col.flex.justify-content-between > ul:nth-child(1) > li:nth-child(1) > span:nth-child(2)")),
 			PreviousPrice: toFloat(e.ChildText("section > div.row > div.col-12.col-md-8.col-content > div:nth-child(3) > div > div:nth-child(1) > div.p-3 > div.flex-list-2-col.flex.justify-content-between > ul:nth-child(2) > li:nth-child(1) > span:nth-child(2)")),
 			Bid:           toFloat(e.ChildText("section > div.row > div.col-12.col-md-8.col-content > div:nth-child(3) > div > div:nth-child(1) > div.p-3 > div.flex-list-2-col.flex.justify-content-between > ul:nth-child(1) > li:nth-child(2) > span:nth-child(2)")),
